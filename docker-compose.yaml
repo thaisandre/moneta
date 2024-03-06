@@ -1,0 +1,84 @@
+version: '3'
+
+services:
+
+  db:
+    image: postgres:latest
+    container_name: postgres_container
+    environment:
+      POSTGRES_DB: "moneta"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+    ports:
+        - "5432:5432"
+    restart: unless-stopped
+    volumes:
+        - ./docker/database:/var/lib/postgresql/data
+    networks:
+        - moneta_network
+    healthcheck:
+      test: [ "CMD", "psql", "-U", "postgres", "-c", "SELECT 1;" ]
+
+  db-test:
+    image: postgres:latest
+    container_name: postgres_test_container
+    environment:
+      POSTGRES_DB: "moneta-test"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+    ports:
+      - "5434:5432"
+    restart: unless-stopped
+    networks:
+      - moneta_network
+    healthcheck:
+      test: [ "CMD", "psql", "-U", "postgres", "-c", "SELECT 1;" ]
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: moneta_pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "admin@postgres.com"
+      PGADMIN_DEFAULT_PASSWORD: "postgres"
+    user: '$UID:$GID'
+    ports:
+      - "9999:80"
+    volumes:
+      - ./docker/pgadmin4:/var/lib/pgadmin
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - moneta_network
+
+  moneta:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: moneta
+    container_name: moneta_container
+    volumes:
+      - ./:/app
+    environment:
+      - "SPRING_PROFILES_ACTIVE=dev"
+      - "DATASOURCE_URL=jdbc:postgresql://db:5432/moneta"
+      - "DATASOURCE_USERNAME=postgres"
+      - "DATASOURCE_PASSWORD=postgres"
+      - "DATASOURCE_TEST_URL=jdbc:postgresql://db-test:5434/moneta-test"
+      - "DATASOURCE_TEST_USERNAME=postgres"
+      - "DATASOURCE_TEST_PASSWORD=postgres"
+    ports:
+      - "8081:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+      db-test:
+        condition: service_healthy
+    networks:
+      - moneta_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/health" ]
+
+networks:
+  moneta_network:
+    driver: bridge

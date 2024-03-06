@@ -1,0 +1,11 @@
+CREATE TABLE bill (
+    id SERIAL NOT NULL,
+    createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updatedAt TIMESTAMP DEFAULT NULL,
+    expirationDate DATE NOT NULL,
+    paymentDate TIMESTAMP DEFAULT NULL,
+    value NUMERIC(7,2) NOT NULL,
+    description VARCHAR(255) NOT NULL,
+    situation VARCHAR(50) NOT NULL DEFAULT 'PENDING',
+    PRIMARY KEY (id)
+);
