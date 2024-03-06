@@ -1,5 +1,12 @@
+@port = 8081
+
+# CHECK HEALTH
+GET http://127.0.0.1:{{port}}/health
+
+###
+
 # CREATE BILL
-POST http://127.0.0.1:8080/bills
+POST http://127.0.0.1:{{port}}/bills
 Content-Type: application/json
 Authorization: Bearer 7946e5f310a7c8b3b4a8c52e114c1779e6711a65
 
@@ -12,23 +19,23 @@ Authorization: Bearer 7946e5f310a7c8b3b4a8c52e114c1779e6711a65
 ###
 
 # GET BILLS
-GET http://127.0.0.1:8080/bills
+GET http://127.0.0.1:{{port}}/bills?page=0
 Content-Type: application/json
 Authorization: Bearer 7946e5f310a7c8b3b4a8c52e114c1779e6711a65
 
 ###
 
 # GET BILL BY ID
-GET http://127.0.0.1:8080/bills/1
+GET http://127.0.0.1:{{port}}/bills/1
 Content-Type: application/json
-Authorization: Bearer token-teste
+Authorization: Bearer 7946e5f310a7c8b3b4a8c52e114c1779e6711a65
 
 ###
 
 # UPDATE BILL BY ID
-PUT http://127.0.0.1:8080/bills/1
+PUT http://127.0.0.1:{{port}}/bills/1
 Content-Type: application/json
-Authorization: Bearer token-teste
+Authorization: Bearer 7946e5f310a7c8b3b4a8c52e114c1779e6711a65
 
 {
   "expirationDate": "10/05/2024",
@@ -39,31 +46,31 @@ Authorization: Bearer token-teste
 ###
 
 # PAY BILL BY ID
-PUT http://127.0.0.1:8080/bills/pay/1
+PUT http://127.0.0.1:{{port}}/bills/pay/1
 Content-Type: application/json
-Authorization: Bearer token-teste
+Authorization: Bearer 7946e5f310a7c8b3b4a8c52e114c1779e6711a65
 
 ###
 
 # FILTER BILLS BY EXPIRATIONDATE OR/AND DESCRIPTION
-GET http://127.0.0.1:8080/bills/filter?expirtionDate=10/04/2024&description=Conta%20de%20Luz
+GET http://127.0.0.1:{{port}}/bills/filter?expirtionDate=10/04/2024&description=Conta%20de%20Luz
 Content-Type: application/json
-Authorization: Bearer token-teste
+Authorization: Bearer 7946e5f310a7c8b3b4a8c52e114c1779e6711a65
 
 ###
 
 # GET TOTAL OF PAID BILLS BY PERIOD
-GET http://127.0.0.1:8080/bills/total/period?startDate=01/01/2024&endDate=01/01/2025
+GET http://127.0.0.1:{{port}}/bills/total/period?startDate=01/01/2024&endDate=01/01/2025
 Content-Type: application/json
-Authorization: Bearer token-teste
+Authorization: Bearer 7946e5f310a7c8b3b4a8c52e114c1779e6711a65
 
 ###
 
 # IMPORT BILLS BY CSV FILE
-POST http://127.0.0.1:8080/bills/import
+POST http://127.0.0.1:{{port}}/bills/import
 Host: locahost:8080
 Content-Type: multipart/form-data;boundary="boundary"
-Authorization: Bearer token-teste
+Authorization: Bearer 7946e5f310a7c8b3b4a8c52e114c1779e6711a65
 
 --boundary
 Content-Disposition: form-data; name="file"; filename="bills.csv"
@@ -72,8 +79,3 @@ Content-Type: text/csv
 expirationDate,value,description
 10/04/2024,140,Conta de luz
 15/04/2024,55.50,Conta de água
-
-###
-GET http://127.0.0.1:8080/teste
-Content-Type: application/json
-Authorization: Bearer token-teste
