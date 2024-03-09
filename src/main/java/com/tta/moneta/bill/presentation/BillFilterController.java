@@ -23,7 +23,7 @@ public class BillFilterController {
     private final BillRepository billRepository;
     private final TotalPaidBillFilterValidator totalPaidBillFilterValidator;
 
-    @InitBinder("totalPaidBillFilter")
+    @InitBinder("dtoBillFilterByPeriod")
     public void initBinder(WebDataBinder binder) {
         binder.addValidators(totalPaidBillFilterValidator);
     }
